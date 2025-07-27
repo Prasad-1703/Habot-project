@@ -4,12 +4,13 @@ metadata:
   name: django-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
   ingressClassName: nginx
   rules:
     - host: demo.local
       http:
         paths:
-          - path: /?(.*)   # Works well with the rewrite-target
+          - path: /
             pathType: Prefix
             backend:
               service:
