@@ -33,13 +33,14 @@ git clone https://github.com/varal-uae/Simple-Extraction-Demo-Track.git
 # Kubernetes YAML setup
 git clone https://github.com/Prasad-1703/Habot-project.git
 cd Habot-project'''
+
 2. 🚢 Start Minikube
 Start Minikube with Docker as the driver:
 
-minikube start --driver=docker
+'''minikube start --driver=docker'''
 Enable the ingress controller:
 
-minikube addons enable ingress
+'''minikube addons enable ingress'''
 3. 🐳 Build & Push Docker Image
 You have two options:
 
@@ -47,7 +48,7 @@ You have two options:
 You can directly use the public image:
 
 
-image: prasad1703/simpleextraction:latest
+'''image: prasad1703/simpleextraction:latest'''
 ✅ Already referenced in the Kubernetes deployment.yaml file.
 
 🔸 Option 2: Build Your Own Image
