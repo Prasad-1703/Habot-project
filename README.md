@@ -32,7 +32,7 @@ git clone https://github.com/varal-uae/Simple-Extraction-Demo-Track.git
 
 # Kubernetes YAML setup
 git clone https://github.com/Prasad-1703/Habot-project.git
-cd Habot-project
+cd Habot-project'''
 2. 🚢 Start Minikube
 Start Minikube with Docker as the driver:
 
