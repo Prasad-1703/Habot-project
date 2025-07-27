@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: prasad1703/simpleextraction:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django-secret
+                  key: SECRET_KEY
+            - name: DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: DEBUG
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-secret
+                  key: DB_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: DB_PORT
+            - name: EMAIL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: EMAIL_HOST
+            - name: EMAIL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: EMAIL_PORT
+            - name: EMAIL_HOST_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: EMAIL_HOST_USER
+            - name: EMAIL_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-secret
+                  key: EMAIL_HOST_PASSWORD
+            - name: EMAIL_USE_TLS
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: EMAIL_USE_TLS
+            - name: DEFAULT_FROM_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: DEFAULT_FROM_EMAIL
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: ALLOWED_HOSTS
