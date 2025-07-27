@@ -6,8 +6,8 @@ This guide explains how to deploy the **Simple Extraction Django App** (develope
 
 ## 📁 Repositories Used
 
-- 🔹 **Source Code & Dockerfile**: [Simple-Extraction-Demo-Track](https://github.com/varal-uae/Simple-Extraction-Demo-Track.git)
-- 🔸 **Kubernetes YAML Files**: [Habot-project](https://github.com/Prasad-1703/Habot-project.git)
+* 🔹 **Source Code & Dockerfile**: [Simple-Extraction-Demo-Track](https://github.com/varal-uae/Simple-Extraction-Demo-Track.git)
+* 🔸 **Kubernetes YAML Files**: [Habot-project](https://github.com/Prasad-1703/Habot-project.git)
 
 ---
 
@@ -15,10 +15,10 @@ This guide explains how to deploy the **Simple Extraction Django App** (develope
 
 Ensure you have the following tools installed on your local machine:
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) (For windows)
-- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
-- [kubectl](https://kubernetes.io/docs/tasks/tools/)
-- Git
+* [Docker Desktop](https://www.docker.com/products/docker-desktop) (For Windows)
+* [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/)
+* Git
 
 ---
 
@@ -32,48 +32,78 @@ git clone https://github.com/varal-uae/Simple-Extraction-Demo-Track.git
 
 # Kubernetes YAML setup
 git clone https://github.com/Prasad-1703/Habot-project.git
-cd Habot-project'''
+cd Habot-project
+```
 
-2. 🚢 Start Minikube
-Start Minikube with Docker as the driver:
+---
 
-'''minikube start --driver=docker'''
-Enable the ingress controller:
+### 2. 🚢 Start Minikube
 
-'''minikube addons enable ingress'''
-3. 🐳 Build & Push Docker Image
-You have two options:
+```bash
+minikube start --driver=docker
+minikube addons enable ingress
+```
 
-🔹 Option 1: Use Prebuilt Image (Quick Start)
-You can directly use the public image:
+---
 
+### 3. 🐳 Build & Push Docker Image
 
-'''image: prasad1703/simpleextraction:latest'''
-✅ Already referenced in the Kubernetes deployment.yaml file.
+#### 🔹 Option 1: Use Prebuilt Image (Quick Start)
 
-🔸 Option 2: Build Your Own Image
-If you'd like to modify or build the app yourself:
+Already used in the deployment YAML:
 
+```yaml
+image: prasad1703/simpleextraction:latest
+```
+
+#### 🔸 Option 2: Build Your Own Image
+
+```bash
 cd Simple-Extraction-Demo-Track
 docker build -t yourdockerhubusername/simpleextraction:v1 .
 docker push yourdockerhubusername/simpleextraction:v1
-Then update your deployment.yaml:
+```
 
+Update your `deployment.yaml` accordingly:
+
+```yaml
 image: yourdockerhubusername/simpleextraction:v1
-4. 🔐 Create ConfigMap & Secrets
+```
+
+---
+
+### 4. 🔐 Create ConfigMap & Secrets
+
+```bash
 kubectl apply -f configmap.yaml
 kubectl apply -f secret.yaml
-5. 🗄 Deploy PostgreSQL
+```
+
+---
+
+### 5. 📄 Deploy PostgreSQL
+
+```bash
 kubectl apply -f postgres-deployment.yaml
 kubectl apply -f postgres-service.yaml
-6. 🛠 Deploy Django App
-Apply deployment and service files:
+```
 
+---
+
+### 6. 🛠 Deploy Django App
+
+```bash
 kubectl apply -f django-deployment.yaml
 kubectl apply -f django-service.yaml
-7. 🏁 Run Migrations Automatically (Init Container)
-To automatically run migrations before the app starts, an init container is used in the deployment file. Make sure your django-deployment.yaml includes it:
+```
 
+---
+
+### 7. 🏁 Run Migrations Automatically (Init Container)
+
+Ensure `initContainers` are included in the deployment like this:
+
+```yaml
 initContainers:
   - name: migrate
     image: prasad1703/simpleextraction:latest
@@ -83,38 +113,70 @@ initContainers:
           name: django-config
       - secretRef:
           name: django-secret
-You can find the complete deployment in the Habot-project repo.
+```
 
-8. 🌐 Set Up Ingress
+---
 
+### 8. 🌐 Set Up Ingress
+
+```bash
 kubectl apply -f ingress.yaml
-Add this line to your Windows hosts file (C:\Windows\System32\drivers\etc\hosts):
+```
 
+Update Windows hosts file (`C:\Windows\System32\drivers\etc\hosts`):
+
+```text
 192.168.49.2 demo.local
-Replace 192.168.49.2 with the IP from:
+```
 
+Replace with your Minikube IP:
+
+```bash
 minikube ip
-9. 🌍 Access the App
-Start the tunnel to expose your services:
+```
 
+---
+
+### 9. 🌍 Access the App
+
+Start the tunnel:
+
+```bash
 minikube tunnel
-Then, visit:
+```
 
+Then go to:
+
+```text
 http://demo.local
-If NodePort is used:
+```
 
+Or:
+
+```bash
 minikube service django
-✅ Final Notes
-Ensure PostgreSQL and Django containers are in Running state.
+```
 
-If using a new Postgres version, delete Minikube volumes to avoid version conflicts:
+---
 
+## ✅ Final Notes
+
+* Make sure PostgreSQL and Django pods are in **Running** state.
+* If using a new PostgreSQL version and hitting version mismatch errors, delete Minikube volumes:
+
+```bash
 minikube delete --all
-Logs:
+```
 
+* Logs can be viewed with:
+
+```bash
 kubectl logs <pod-name>
-🙌 Credits
-💻 App Source: varal-uae/Simple-Extraction-Demo-Track
+```
 
-🔧 Kubernetes Configs: Prasad-1703/Habot-project
+---
 
+## 🙌 Credits
+
+* 💻 App Source: [varal-uae/Simple-Extraction-Demo-Track](https://github.com/varal-uae/Simple-Extraction-Demo-Track)
+* 🔧 Kubernetes Configs: [Prasad-1703/Habot-project](https://github.com/Prasad-1703/Habot-project)
